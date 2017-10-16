@@ -2,8 +2,10 @@
 
 * [MetroLyrics](http://www.metrolyrics.com/)からランダムに歌詞を抽出して表示する.
 
----
-
-### 実装予定
-
 * アーティスト名を引数で指定
+
+* Usage
+
+    * `$ python fetch_lyrics.py oasis`
+
+    * `$ python fetch_lyrics.py arctic monkeys`
