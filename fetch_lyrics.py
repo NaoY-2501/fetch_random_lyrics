@@ -6,26 +6,38 @@ import requests
 from bs4 import BeautifulSoup as bs
 
 
-def get_html(url):
-    req = requests.get(url)
-    if req.status_code == 200:
-        return req.text
-    else:
-        print('error')
+def get_lyric_pages(artist_name):
+    history = []
+    contents = []
+    page_num = 1
+    status = 200
+    while status == 200 and len(history) == 0:
+        url = 'http://www.metrolyrics.com/{keyword}-alpage-{page_num}.html'.format(  # NOQA
+            keyword=artist_name,
+            page_num=page_num
+        )
+        r = requests.get(url)
+        status = r.status_code
+        history = r.history
+        contents.append(r.text)
+        page_num += 1
+    return contents[:-1]
 
 
-def parse_song_list(content, artist_name):
+def parse_song_list(contents, artist_name):
     artist_name = artist_name.replace('-', ' ')
-    soup = bs(content, 'html.parser')
-    a = soup.find_all('a', class_='title hasvidtable')
     songs_dict = defaultdict(str)
-    for each in a:
-        if artist_name in (each['title']).lower():
-            songs_dict[each.get_text()] = each['href']
+    for content in contents:
+        soup = bs(content, 'html.parser')
+        a_tags = soup.find_all('a', class_='title hasvidtable')
+        for a in a_tags:
+            if artist_name in (a['title']).lower():
+                title = a.get_text().replace('Lyrics', '')
+                songs_dict[title] = a['href']
     return songs_dict
 
 
-def parse_lyric(content):
+def parse_lyrics(content):
     soup = bs(content, 'html.parser')
     p = soup.find_all('p', class_='verse')
     for each in p:
@@ -49,18 +61,19 @@ def main():
     args = parser.parse_args()
     artist_name = '-'.join([word.lower() for word in args.artist_name])
 
-    url = 'http://www.metrolyrics.com/{keyword}-lyrics.html'.format(
-        keyword=artist_name
-    )
-    content = get_html(url)
-    songs_dict = parse_song_list(content, artist_name)
+    contents = get_lyric_pages(artist_name)
+    songs_dict = parse_song_list(contents, artist_name)
 
     random_song = random.choice([song for song in songs_dict.keys()])
     random_song_url = songs_dict.get(random_song)
 
     print(random_song)
-    content = get_html(random_song_url)
-    parse_lyric(content)
+    song_page = requests.get(random_song_url)
+    if song_page.status_code == 200:
+        content = song_page.text
+    else:
+        print('HTTP Error {}'.format(song_page.status_code))
+    parse_lyrics(content)
 
 
 if __name__ == "__main__":
