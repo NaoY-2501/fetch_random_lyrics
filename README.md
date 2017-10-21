@@ -4,6 +4,8 @@
 
 * アーティスト名を引数で指定
 
+* 指定されたアーティストのMetroLyricsにある全曲を対象にする
+
 * Usage
 
     * `$ python fetch_lyrics.py oasis`
