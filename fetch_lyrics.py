@@ -6,7 +6,13 @@ import requests
 from bs4 import BeautifulSoup as bs
 
 
-def get_lyric_pages(artist_name):
+def get_lyrics_pages(artist_name):
+    """ Get all song list pages of target artist
+
+    :param artist_name: name of target artist
+    :return: contents
+    :rtype: list
+    """
     history = []
     contents = []
     page_num = 1
@@ -25,6 +31,13 @@ def get_lyric_pages(artist_name):
 
 
 def parse_song_list(contents, artist_name):
+    """ Parse song list page.
+        Create lyrics page's url dictionary.
+
+    :param contents: song list pages list, artist_name: name of target artist
+    :return: songs_dict
+    :rtype: defaultdict
+    """
     artist_name = artist_name.replace('-', ' ')
     songs_dict = defaultdict(str)
     for content in contents:
@@ -38,6 +51,10 @@ def parse_song_list(contents, artist_name):
 
 
 def parse_lyrics(content):
+    """ Parse lyrics from raw html
+
+    :param content: raw html strings
+    """
     soup = bs(content, 'html.parser')
     p = soup.find_all('p', class_='verse')
     for each in p:
@@ -45,6 +62,11 @@ def parse_lyrics(content):
 
 
 def create_parser():
+    """ Create argument parser
+
+    :return: parser
+    :rtype: argparse.ArgumentParser
+    """
     parser = argparse.ArgumentParser(description='Fetch lyric randomly')
     parser.add_argument(
         'artist_name',
@@ -61,7 +83,7 @@ def main():
     args = parser.parse_args()
     artist_name = '-'.join([word.lower() for word in args.artist_name])
 
-    contents = get_lyric_pages(artist_name)
+    contents = get_lyrics_pages(artist_name)
     songs_dict = parse_song_list(contents, artist_name)
 
     random_song = random.choice([song for song in songs_dict.keys()])
