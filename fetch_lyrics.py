@@ -97,7 +97,9 @@ def main():
     print(random_song)
     song_page = requests.get(random_song_url)
     if song_page.status_code == 200:
-        content = song_page.text
+        # 日本語の文字化けを防ぐため、contentを使ってバイナリデータで読み込む → BeautifulSoup側でデコードさせる
+        # see: http://orangain.hatenablog.com/entry/encoding-in-requests-and-beautiful-soup # NOQA
+        content = song_page.content
     else:
         print('HTTP Error {}'.format(song_page.status_code))
     parse_lyrics(content)
