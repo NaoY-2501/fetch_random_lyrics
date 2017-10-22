@@ -1,5 +1,6 @@
 import argparse
 import random
+import sys
 from collections import defaultdict
 
 import requests
@@ -84,6 +85,10 @@ def main():
     artist_name = '-'.join([word.lower() for word in args.artist_name])
 
     contents = get_lyrics_pages(artist_name)
+    # 歌詞ページが存在しない場合は異常終了する
+    if len(contents) < 1:
+        print('--- Not Found ---')
+        sys.exit(1)
     songs_dict = parse_song_list(contents, artist_name)
 
     random_song = random.choice([song for song in songs_dict.keys()])
