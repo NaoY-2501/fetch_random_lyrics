@@ -6,8 +6,16 @@
 
 * 指定されたアーティストのMetroLyricsにある全曲を対象にする
 
+* 日本語歌詞にも対応
+
 * Usage
 
-    * `$ python fetch_lyrics.py oasis`
+    * `$ python fetch_lyrics.py "Artist Name"`
 
-    * `$ python fetch_lyrics.py arctic monkeys`
+    * example
+
+        * `$ python fetch_lyrics.py Oasis`
+
+        * `$ python fetch_lyrics.py Arctic Monkeys`
+
+        * `$ python fetch_lyrics.py aimer`
