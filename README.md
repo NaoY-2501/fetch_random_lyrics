@@ -18,4 +18,4 @@
 
         * `$ python fetch_lyrics.py Arctic Monkeys`
 
-        * `$ python fetch_lyrics.py aimer`
+        * `$ python fetch_lyrics.py Aimer`
